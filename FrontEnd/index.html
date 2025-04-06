@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ServeToSave India</title>
+  <style>
+    :root {
+        --primary: #2B8A3E;
+        --secondary: #40C057;
+        --accent: #FF922B;
+        --light: #F8F9FA;
+        --dark: #2B2D42;
+    }
+
+    body.portal {
+        background: linear-gradient(45deg, #e9f5db 0%, #d8f3dc 100%),
+                    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><path fill="%2340C05720" d="M50 0L100 50 50 100 0 50 50 0z"/></svg>');
+        background-size: 12px;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 90px 20px 60px;
+    }
+
+    /* ---------- NAVBAR ---------- */
+    .navbar {
+        position: fixed;
+        top: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 16px;
+        padding: 10px 36px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 40px;
+        width: auto;
+        max-width: 90%;
+        backdrop-filter: blur(12px);
+        z-index: 1000;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .navbar .logo {
+        color: var(--primary);
+        font-size: 26px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .navbar .logo::before {
+        content: '🍱';
+        font-size: 32px;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    }
+
+    .navbar ul {
+        display: flex;
+        gap: 24px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar a {
+        color: var(--dark);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .navbar a:hover {
+        background: rgba(64, 192, 87, 0.1);
+        color: var(--primary);
+    }
+
+    /* ---------- TOGGLE BUTTONS ---------- */
+    .toggle-buttons {
+        display: flex;
+        gap: 16px;
+        margin: 24px 0 32px;
+        position: relative;
+    }
+
+    .toggle-buttons::after {
+        content: '';
+        position: absolute;
+        bottom: -24px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 2px;
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .toggle-buttons button {
+        padding: 16px 48px;
+        border: none;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--dark);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        font-size: 16px;
+    }
+
+    .toggle-buttons button.active {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 6px 16px rgba(43, 138, 62, 0.3);
+    }
+
+    .toggle-buttons button:not(.active):hover {
+        background: rgba(64, 192, 87, 0.1);
+        color: var(--primary);
+    }
+
+    /* ---------- FORM CONTAINER ---------- */
+    .container {
+        width: 100%;
+        max-width: 640px;
+        margin: -8px auto 0;
+        padding: 0 20px;
+    }
+
+    .form-wrapper {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 24px;
+        padding: 48px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+        margin-top: 24px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        display: none;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: formSlide 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+
+    @keyframes formSlide {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-wrapper.active {
+        display: block;
+    }
+
+    h2 {
+        text-align: center;
+        color: var(--primary);
+        margin-bottom: 40px;
+        font-size: 32px;
+        font-weight: 700;
+        position: relative;
+    }
+
+    h2::after {
+        content: '';
+        position: absolute;
+        bottom: -16px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--accent);
+    }
+
+    .form-group {
+        margin-bottom: 28px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 12px;
+        color: var(--dark);
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 16px;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    input:focus, select:focus {
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 4px rgba(64, 192, 87, 0.2);
+        outline: none;
+    }
+
+    input[type="file"] {
+        padding: 24px;
+        border: 2px dashed #e9ecef;
+        background: rgba(64, 192, 87, 0.03);
+        text-align: center;
+    }
+
+    input[type="file"]:focus {
+        border-color: var(--secondary);
+    }
+
+    button[type="submit"] {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 18px;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 16px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    button[type="submit"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(64, 192, 87, 0.3);
+    }
+
+    /* ---------- SUCCESS MESSAGE ---------- */
+    .success {
+        position: fixed;
+        top: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary);
+        color: white;
+        padding: 16px 40px;
+        border-radius: 12px;
+        font-weight: 500;
+        box-shadow: 0 4px 20px rgba(43, 138, 62, 0.3);
+        display: none;
+        z-index: 1001;
+        animation: slideIn 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    @keyframes slideIn {
+        from {
+            top: -100px;
+            opacity: 0;
+        }
+        to {
+            top: 24px;
+            opacity: 1;
+        }
+    }
+    .dots::after {
+  content: '⠋⠙⠚⠞⠖⠦⠴⠲⠳⠓';
+  animation: dotspin 1s steps(10) infinite;
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 14px;
+}
+
+@keyframes dotspin {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-1em); }
+}
+
+</style>
+</head>
+<body class="portal">
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">ServeToSave</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="donations.html">Donations</a></li>
+      <li><a href="requests.html">Requests</a></li>
+      <li><a href="faq.html">FAQs</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="about.html">AboutUs</a></li>
+      
+    </ul>
+  </nav>
+
+  <!-- TOGGLE BUTTONS -->
+  <div class="toggle-buttons">
+    <button onclick="toggleForm('donate')">Donate</button>
+    <button onclick="toggleForm('request')">Request</button>
+  </div>
+
+  <div id="successMessage" class="success">Form submitted successfully!</div>
+
+   <!-- FORM CONTAINER -->
+  <div class="container">
+    <div id="donateFormWrapper" class="form-wrapper active">
+      <h2>Food Donation Form</h2>
+      <form id="donateForm">
+        <input type="text" name="foodName" placeholder="Food Name" required />
+        <input type="number" name="quantity" placeholder="Quantity (in servings)" required />
+        <label>Pickup Date & Time:</label>
+        <input type="datetime-local" name="pickupTime" required />
+        <label>Best Before:</label>
+        <input type="date" name="bestBefore" required />
+        <input type="text" name="location" placeholder="Pickup Location" required />
+        <input type="tel" name="contact" placeholder="Contact Number" required pattern="[0-9]{10}" maxlength="10" />
+        <label>Select Document Type:</label>
+        <select name="documentType" required>
+          <option value="">-- Select a document --</option>
+          <option value="aadhaar">Aadhaar Card</option>
+          <option value="pan">PAN Card</option>
+          <option value="voter">Voter ID</option>
+          <option value="driving">Driving License</option>
+          <option value="passport">Passport</option>
+          <option value="org">NGO/Org Registration Certificate</option>
+        </select>
+        <label>Upload ID/Authorization Document (PDF only):</label>
+        <input type="file" name="document" accept=".pdf" required />
+        <button type="submit">Submit Donation</button>
+      </form>
+    </div>
+
+    <div id="requestFormWrapper" class="form-wrapper">
+      <h2>Food Request Form</h2>
+      <form id="requestForm">
+        <input type="text" name="requesterName" placeholder="Your Name" required />
+        <input type="number" name="neededQuantity" placeholder="Quantity Needed" required />
+        <input type="text" name="requestLocation" placeholder="Delivery Location" required />
+        <input type="tel" name="requestContact" placeholder="Contact Number" required pattern="[0-9]{10}" maxlength="10" />
+        <label>Select Document Type:</label>
+        <select name="documentType" required>
+          <option value="">-- Select a document --</option>
+          <option value="aadhaar">Aadhaar Card</option>
+          <option value="pan">PAN Card</option>
+          <option value="voter">Voter ID</option>
+          <option value="driving">Driving License</option>
+          <option value="passport">Passport</option>
+          <option value="org">NGO/Org Registration Certificate</option>
+        </select>
+        <label>Upload ID/Authorization Document (PDF only):</label>
+        <input type="file" name="document" accept=".pdf" required />
+        <button type="submit">Submit Request</button>
+      </form>
+    </div>
+  </div>
+  <!-- SCRIPT (unchanged) -->
+  <script>
+    function toggleForm(type) {
+      document.getElementById('donateFormWrapper').classList.remove('active');
+      document.getElementById('requestFormWrapper').classList.remove('active');
+      if (type === 'donate') {
+        document.getElementById('donateFormWrapper').classList.add('active');
+      } else {
+        document.getElementById('requestFormWrapper').classList.add('active');
+      }
+    }
+  
+    const donateForm = document.getElementById('donateForm');
+    const requestForm = document.getElementById('requestForm');
+    const successMessage = document.getElementById('successMessage');
+  
+    function showSuccess() {
+      successMessage.style.display = 'block';
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+      }, 3000);
+    }
+  
+    async function handleSubmit(form, endpoint) {
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const fileInput = form.querySelector('input[name="document"]');
+      const originalText = submitBtn.innerHTML;
+  
+      if (!fileInput.files.length) {
+        alert('Please upload the required document.');
+        return;
+      }
+  
+      const formData = new FormData(form);
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Submitting <span class="dots">...</span>';
+  
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+  
+        if (res.ok) {
+          form.reset();
+          window.location.href = '/thank-you.html';
+        } else {
+          alert(data.error || 'Submission failed.');
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        alert('Something went wrong. Please try again.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }
+    }
+  
+    donateForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      handleSubmit(donateForm, '/api/donate');
+    });
+  
+    requestForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      handleSubmit(requestForm, '/api/request');
+    });
+  </script>
+  
+</body>
+</html>

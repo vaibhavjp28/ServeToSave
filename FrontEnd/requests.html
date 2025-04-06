@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>All Food Requests</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { text-align: center; color: #2b6cb0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+    th { background-color: #3182ce; color: white; }
+    tr:nth-child(even) { background-color: #ebf8ff; }
+    a { color: #2b6cb0; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>All Food Requests</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Requester Name</th>
+        <th>Quantity Needed</th>
+        <th>Location</th>
+        <th>Contact</th>
+        <th>Document Type</th>
+        <th>Document</th>
+        <th>Submitted At</th>
+      </tr>
+    </thead>
+    <tbody id="requests-body"></tbody>
+  </table>
+
+  <script>
+    async function loadRequests() {
+      try {
+        const response = await fetch('/api/requests');
+        const requests = await response.json();
+
+        const tbody = document.getElementById('requests-body');
+        tbody.innerHTML = requests.map(r => `
+          <tr>
+            <td>${r.requesterName}</td>
+            <td>${r.neededQuantity}</td>
+            <td>${r.requestLocation}</td>
+            <td>${r.requestContact}</td>
+            <td>${r.documentType}</td>
+            <td>${r.documentPath ? `<a href="${r.documentPath}" target="_blank">View</a>` : 'N/A'}</td>
+            <td>${new Date(r.createdAt).toLocaleString()}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Failed to load requests:', err);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadRequests);
+  </script>
+</body>
+</html>

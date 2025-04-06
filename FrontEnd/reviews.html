@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reviews</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9f9f9;
+      padding: 40px 20px;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 30px;
+      padding: 10px 30px;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      width: calc(100% - 40px);
+      max-width: 900px;
+    }
+
+    .navbar ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar li {
+      display: inline;
+    }
+
+    .navbar a {
+      text-decoration: none;
+      color: #2f855a;
+      font-weight: 600;
+      font-size: 16px;
+      transition: color 0.3s ease;
+    }
+
+    .navbar a:hover {
+      color: #38a169;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 120px auto 40px;
+      background-color: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2f855a;
+      margin-bottom: 30px;
+      font-size: 28px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    button {
+      background-color: #38a169;
+      color: white;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2f855a;
+    }
+
+    .review {
+      background: #f0fff4;
+      padding: 15px 20px 25px 20px;
+      border-left: 5px solid #38a169;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .review .name {
+      font-weight: bold;
+      color: #22543d;
+      margin-bottom: 5px;
+    }
+
+    .review .text {
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .stars {
+      display: flex;
+      gap: 5px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #cbd5e0;
+      margin-bottom: 20px;
+    }
+
+    .star.active {
+      color: #f6ad55;
+    }
+
+    .delete-btn {
+      position: absolute;
+      bottom: 8px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      color: #718096;
+      opacity: 0.7;
+    }
+
+    .delete-btn:hover {
+      opacity: 1;
+      color: #2d3748;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 25px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .navbar ul {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .navbar {
+        padding: 8px 20px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .stars {
+        font-size: 20px;
+      }
+
+      .navbar {
+        top: 10px;
+        border-radius: 20px;
+        padding: 6px 16px;
+      }
+
+      .navbar ul {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="donations.html">Home</a></li>
+      <li><a href="requests.html">Home</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="faq.html">FAQs</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <h1>What People Say 💬</h1>
+
+    <input type="text" id="name" placeholder="Your Name (leave blank for anonymous)" />
+    <textarea id="review" rows="4" placeholder="Write your review here..." required></textarea>
+
+    <div class="stars" id="stars">
+      <span class="star" data-value="1">&#9733;</span>
+      <span class="star" data-value="2">&#9733;</span>
+      <span class="star" data-value="3">&#9733;</span>
+      <span class="star" data-value="4">&#9733;</span>
+      <span class="star" data-value="5">&#9733;</span>
+    </div>
+
+    <button onclick="submitReview()">Submit Review</button>
+
+    <div id="reviewsList" style="margin-top: 40px;">
+      <!-- Reviews will appear here -->
+    </div>
+  </div>
+
+  <script>
+    let selectedRating = 0;
+
+    function updateStarUI(rating) {
+      const stars = document.querySelectorAll("#stars .star");
+      stars.forEach(star => {
+        star.classList.toggle("active", parseInt(star.dataset.value) <= rating);
+      });
+    }
+
+    document.querySelectorAll("#stars .star").forEach(star => {
+      star.addEventListener("click", () => {
+        selectedRating = parseInt(star.dataset.value);
+        updateStarUI(selectedRating);
+      });
+    });
+
+    function containsBadWords(text) {
+      const badWords = ["badword1", "badword2", "stupid", "idiot", "damn"];
+      return badWords.some(word => text.toLowerCase().includes(word));
+    }
+
+    function submitReview() {
+      const name = document.getElementById("name").value.trim();
+      const review = document.getElementById("review").value.trim();
+
+      if (review === "" || selectedRating === 0) {
+        alert("Please provide both a review and a star rating.");
+        return;
+      }
+
+      if (containsBadWords(review)) {
+        alert("Please keep your review respectful.");
+        return;
+      }
+
+      const reviews = JSON.parse(localStorage.getItem("userReviews")) || [];
+      reviews.unshift({ name, text: review, rating: selectedRating });
+      localStorage.setItem("userReviews", JSON.stringify(reviews));
+
+      document.getElementById("name").value = "";
+      document.getElementById("review").value = "";
+      selectedRating = 0;
+      updateStarUI(selectedRating);
+      loadReviews();
+    }
+
+    function deleteReview(index) {
+      const password = prompt("Admin only. Enter password to delete:");
+      if (password !== "admin123") {
+        alert("Incorrect password.");
+        return;
+      }
+      const reviews = JSON.parse(localStorage.getItem("userReviews")) || [];
+      reviews.splice(index, 1);
+      localStorage.setItem("userReviews", JSON.stringify(reviews));
+      loadReviews();
+    }
+
+    function loadReviews() {
+      const reviews = JSON.parse(localStorage.getItem("userReviews")) || [];
+      const reviewsList = document.getElementById("reviewsList");
+      reviewsList.innerHTML = "";
+
+      if (reviews.length === 0) {
+        reviewsList.innerHTML = "<p style='text-align:center;color:#718096;'>No reviews yet. Be the first to share your thoughts!</p>";
+        return;
+      }
+
+      reviews.forEach((r, i) => {
+        const div = document.createElement("div");
+        div.className = "review";
+        const stars = "★".repeat(r.rating || 0) + "☆".repeat(5 - (r.rating || 0));
+        div.innerHTML = `
+          <div class="name">${r.name || "Anonymous"} &nbsp; <span style="color:#f6ad55;">${stars}</span></div>
+          <div class="text">"${r.text}"</div>
+          <button class="delete-btn" onclick="deleteReview(${i})" title="Delete review">🗑</button>
+        `;
+        reviewsList.appendChild(div);
+      });
+    }
+
+    window.onload = loadReviews;
+  </script>
+
+</body>
+</html>
